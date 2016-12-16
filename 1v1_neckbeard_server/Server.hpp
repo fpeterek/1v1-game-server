@@ -19,8 +19,8 @@
 
 #include "ResourcePath.hpp"
 
-#define PORT 60000
-#define PORT_CLIENT 60001
+#include "macros.hpp"
+
 
 class Server {
     

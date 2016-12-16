@@ -10,13 +10,14 @@
 
 Server::Server() {
     
-    // _socket.setBlocking(false);
     if (_socket.bind(PORT) != sf::Socket::Done) {
         
         throw std::runtime_error("Error binding UDP socket to port 60 000");
         
     }
     
+    
+    waitForConnection();
     mainLoop();
     
 }
@@ -30,7 +31,6 @@ sf::IpAddress Server::playerConnection() {
     
     while (true) {
         
-        // std::this_thread::sleep_for(std::chrono::milliseconds(15));
         _socket.receive(input, 8, received, address, port);
         std::cout << "Received " << received << " bytes from " << address.toString() << ":" << port << " - " << input << std::endl;
         if (port != PORT_CLIENT) { continue; }
@@ -51,18 +51,22 @@ void Server::waitForConnection() {
     std::cout << "IP Address: " << sf::IpAddress::getLocalAddress() << "\n" << std::endl;
     
     std::cout << "Waiting for connection...\n" << "IP Address 1: None \n" << "IP Address 2: None" << std::endl;
-    
     _addr1 = playerConnection();
     
-    std::cout << "Waiting for connection... \n" << "IP Address 1: " << _addr1.toString() << "\nIP Address 2: None" << std::endl;
+#ifndef NO_2_PLAYERS
     
+    std::cout << "Waiting for connection... \n" << "IP Address 1: " << _addr1.toString() << "\nIP Address 2: None" << std::endl;
     _addr2 = playerConnection();
+    
+#endif
     
 }
 
 void Server::mainLoop() {
     
-    
-    waitForConnection();
+    std::cout << "\u001b[2J\u001b[1;1H" << std::endl;
+    std::cout << "2 players connected, running server. \n";
+    std::cout << "Player 1: " << _addr1.toString() << ":" << PORT_CLIENT << "\n";
+    std::cout << "Player 2: " << _addr2.toString() << ":" << PORT_CLIENT << std::endl;
     
 }
