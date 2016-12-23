@@ -12,9 +12,20 @@
 #include <stdio.h>
 #include <unordered_map>
 
-#define TELEPORT 't'
-#define ATTACK 'a'
-#define DORITO 'd'
+#define TELEPORT    't'
+#define ATTACK      'a'
+#define DORITO      'd'
+#define MOVE        'm'
+#define JUMP        'j'
+#define LEFT        'l'
+#define RIGHT       'r'
+
+enum class direction {
+    
+    left = LEFT,
+    right = RIGHT
+    
+};
 
 struct position {
     int x, y;
@@ -22,9 +33,14 @@ struct position {
 
 struct Player {
     
-    int hp;
+    char hp;
+    unsigned char damage;
+    unsigned char moveSpeed;
+    unsigned char sprite;
     position pos;
-    std::unordered_map<char, double> spellCooldown;
+    std::unordered_map<char, int> spellCooldown;
+    
+    void move(direction dir);
     
 };
 

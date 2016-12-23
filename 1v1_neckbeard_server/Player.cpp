@@ -7,3 +7,18 @@
 //
 
 #include "Player.hpp"
+
+void Player::move(direction dir) {
+    
+    if (dir == direction::left) {
+        
+        pos.x -= moveSpeed;
+        
+    }
+    else if (dir == direction::right) {
+        
+        pos.x += moveSpeed;
+        
+    }
+    
+}

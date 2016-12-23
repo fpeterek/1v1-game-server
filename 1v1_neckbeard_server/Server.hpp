@@ -20,6 +20,7 @@
 #include "ResourcePath.hpp"
 
 #include "macros.hpp"
+#include "Player.hpp"
 
 
 class Server {
@@ -27,12 +28,19 @@ class Server {
     sf::UdpSocket _socket;
     sf::IpAddress _addr1, _addr2;
     
-public:
+    Player _player1, _player2;
     
-    Server();
+    char _receivedData[1024];
     
     sf::IpAddress playerConnection();
     void waitForConnection();
+    
+    void acceptRequest();
+    void parseRequest(Player & player);
+    
+public:
+    
+    Server();
     
     void mainLoop();
     
