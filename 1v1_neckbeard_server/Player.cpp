@@ -10,15 +10,6 @@
 
 void Player::move(direction dir) {
     
-    if (dir == direction::left) {
-        
-        pos.x -= moveSpeed;
-        
-    }
-    else if (dir == direction::right) {
-        
-        pos.x += moveSpeed;
-        
-    }
+    pos.x += moveSpeed * ((dir == direction::left) ? -1 : 1 );
     
 }

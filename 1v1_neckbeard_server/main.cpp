@@ -1,17 +1,9 @@
-
 //
-// Disclamer:
-// ----------
+//  main.cpp
+//  1v1_server
 //
-// This code will work only if you selected window, graphics and audio.
-//
-// Note that the "Run Script" build phase will copy the required frameworks
-// or dylibs to your application bundle so you can execute it on any OS X
-// computer.
-//
-// Your resource files (images, sounds, fonts, ...) are also copied to your
-// application bundle. To get the path to these resource, use the helper
-// method resourcePath() from ResourcePath.hpp
+//  Created by Filip Peterek on 12/12/2016.
+//  Copyright © 2016 Filip Peterek. All rights reserved.
 //
 
 #include <SFML/Audio.hpp>

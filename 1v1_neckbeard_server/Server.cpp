@@ -94,7 +94,7 @@ void Server::parseRequest(Player & player) {
     
     if (data[0] == MOVE) {
         
-        
+        player.move(direction(data[2]));
         
     }
     
@@ -107,12 +107,23 @@ void Server::mainLoop() {
     std::cout << "Player 1: " << _addr1.toString() << ":" << PORT_CLIENT << "\n";
     std::cout << "Player 2: " << _addr2.toString() << ":" << PORT_CLIENT << std::endl;
     
+    /* Probably don't want a blocking socket anymore, so the server doesn't stop to wait for packet if one client disconnects */
+    _socket.setBlocking(false);
+    
+    sf::Clock timer;
+    sf::Time  elapsedTime;
+    
     while (true) {
+        
         
         
         /* Accept and parse requests from both clients */
         acceptRequest();
         acceptRequest();
+        
+        elapsedTime = timer.restart();
+        /* I hope I can just make the thread sleep */
+        std::this_thread::sleep_for(std::chrono::milliseconds( 15 - elapsedTime.asMilliseconds() ));
         
     }
     
