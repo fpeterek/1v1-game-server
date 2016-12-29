@@ -28,7 +28,7 @@ int main(int argc, const char * argv[]) {
      */
     
     try {
-        Server();
+        Server(PORT_CLIENT, PORT_SERVER);
     } catch (std::runtime_error & e) {
         std::cout << e.what() << std::endl;
     }

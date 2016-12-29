@@ -12,6 +12,9 @@
 #include <stdio.h>
 #include <unordered_map>
 
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+
 #define TELEPORT    't'
 #define ATTACK      'a'
 #define DORITO      'd'
@@ -27,17 +30,13 @@ enum class direction {
     
 };
 
-struct position {
-    int x, y;
-};
-
 struct Player {
     
     char hp;
     unsigned char damage;
     unsigned char moveSpeed;
     unsigned char sprite;
-    position pos;
+    sf::Vector2i pos;
     std::unordered_map<char, int> spellCooldown;
     
     void move(direction dir);

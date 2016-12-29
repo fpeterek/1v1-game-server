@@ -8,11 +8,14 @@
 
 #include "Server.hpp"
 
-Server::Server() {
+Server::Server(unsigned short clientPort, unsigned short serverPort) :
+    _clientPort(clientPort), _serverPort(serverPort) {
     
-    if (_socket.bind(PORT) != sf::Socket::Done) {
+    if (_socket.bind(_serverPort) != sf::Socket::Done) {
         
-        throw std::runtime_error("Error binding UDP socket to port 60 000");
+        std::stringstream ss;
+        ss << "Error binding UDP socket to port " << _serverPort;
+        throw std::runtime_error(ss.str());
         
     }
     
@@ -33,7 +36,7 @@ sf::IpAddress Server::playerConnection() {
         
         _socket.receive(input, 8, received, address, port);
         std::cout << "Received " << received << " bytes from " << address.toString() << ":" << port << " - " << input << std::endl;
-        if (port != PORT_CLIENT) { continue; }
+        if (port != _clientPort) { continue; }
         if (strcmp(input, "connect")) { continue; }
         break;
         
@@ -73,13 +76,13 @@ void Server::acceptRequest() {
         return;
     }
     
-    if (remoteAddress == _addr1 and remotePort == PORT_CLIENT) {
+    if (remoteAddress == _addr1 and remotePort == _clientPort) {
         
         Player & player = _player1;
         parseRequest(player);
         
     }
-    else if (remoteAddress == _addr2 and remotePort == PORT_CLIENT) {
+    else if (remoteAddress == _addr2 and remotePort == _clientPort) {
         
         Player & player = _player2;
         parseRequest(player);
@@ -100,22 +103,26 @@ void Server::parseRequest(Player & player) {
     
 }
 
+void Server::sendData() {
+    
+    
+    
+}
+
 void Server::mainLoop() {
     
     std::cout << "\u001b[2J\u001b[1;1H" << std::endl;
     std::cout << "2 players connected, running server... \n";
-    std::cout << "Player 1: " << _addr1.toString() << ":" << PORT_CLIENT << "\n";
-    std::cout << "Player 2: " << _addr2.toString() << ":" << PORT_CLIENT << std::endl;
+    std::cout << "Player 1: " << _addr1.toString() << ":" << _clientPort << "\n";
+    std::cout << "Player 2: " << _addr2.toString() << ":" << _clientPort << std::endl;
     
-    /* Probably don't want a blocking socket anymore, so the server doesn't stop to wait for packet if one client disconnects */
+    /* Probably don't want a blocking socket anymore, so the server doesn't stop to wait for packet if one client loses connection */
     _socket.setBlocking(false);
     
     sf::Clock timer;
     sf::Time  elapsedTime;
     
     while (true) {
-        
-        
         
         /* Accept and parse requests from both clients */
         acceptRequest();
@@ -124,6 +131,8 @@ void Server::mainLoop() {
         elapsedTime = timer.restart();
         /* I hope I can just make the thread sleep */
         std::this_thread::sleep_for(std::chrono::milliseconds( 15 - elapsedTime.asMilliseconds() ));
+        
+        sendData();
         
     }
     

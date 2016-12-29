@@ -13,6 +13,7 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <sstream>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
@@ -28,6 +29,8 @@ class Server {
     sf::UdpSocket _socket;
     sf::IpAddress _addr1, _addr2;
     
+    const unsigned short _clientPort, _serverPort;
+    
     Player _player1, _player2;
     
     char _receivedData[1024];
@@ -38,9 +41,11 @@ class Server {
     void acceptRequest();
     void parseRequest(Player & player);
     
+    void sendData();
+    
 public:
     
-    Server();
+    Server(unsigned short playerPort, unsigned short serverPort);
     
     void mainLoop();
     
