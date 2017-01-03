@@ -8,8 +8,10 @@
 
 #include "Player.hpp"
 
-void Player::move(direction dir) {
+void Player::move(direction movementDirection) {
     
-    pos.x += moveSpeed * ((dir == direction::left) ? -1 : 1 );
+    dir = movementDirection;
+    
+    pos.x += moveSpeed * ((movementDirection == direction::left) ? -1 : 1 );
     
 }

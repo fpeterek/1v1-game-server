@@ -12,6 +12,13 @@
 #define PORT_SERVER 60001
 #define PORT_CLIENT 60002
 
+#define TELEPORT    't'
+#define ATTACK      'a'
+#define DORITO      'd'
+#define JUMP        'j'
+#define LEFT        'l'
+#define RIGHT       'r'
+
 #define NO_2_PLAYERS // If defined, server won't wait for second player to connect, used for debugging
 
 #endif /* macros_hpp */

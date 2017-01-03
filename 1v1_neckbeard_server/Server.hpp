@@ -22,6 +22,7 @@
 
 #include "macros.hpp"
 #include "Player.hpp"
+#include "Response.hpp"
 
 
 class Server {
@@ -38,7 +39,10 @@ class Server {
     sf::IpAddress playerConnection();
     void waitForConnection();
     
-    void acceptRequest();
+    Response _response;
+    
+    /* Accept a request from targetIP */
+    void acceptRequest(sf::IpAddress & targetIP);
     void parseRequest(Player & player);
     
     void sendData();

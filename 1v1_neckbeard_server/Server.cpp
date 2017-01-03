@@ -9,7 +9,8 @@
 #include "Server.hpp"
 
 Server::Server(unsigned short clientPort, unsigned short serverPort) :
-    _clientPort(clientPort), _serverPort(serverPort) {
+    _clientPort(clientPort), _serverPort(serverPort)
+    {
     
     if (_socket.bind(_serverPort) != sf::Socket::Done) {
         
@@ -19,6 +20,21 @@ Server::Server(unsigned short clientPort, unsigned short serverPort) :
         
     }
     
+    _response.addEntity(_player1);
+    _response.addEntity(_player2);
+    
+    /* Player sprite is 10 pixels wide without hair (hitbox is 10 pixels wide) */
+    /* Player sprite is scaled up by 3, therefor the hitbox is 10 * 3          */
+    /* Width of player is 30                                                   */
+    _player1.pos.x = 110;
+    _player1.pos.y = 295;
+    _player1.dir = direction::right;
+    _player1.hp = 6;
+    
+    _player2.pos.x = 690 - 30;
+    _player2.pos.y = 295;
+    _player2.dir = direction::left;
+    _player2.hp = 6;
     
     waitForConnection();
     mainLoop();
@@ -64,9 +80,15 @@ void Server::waitForConnection() {
     
 #endif
     
+    std::cout << "\u001b[2J\u001b[1;1H" << std::endl;
+    std::cout << "2 players connected, running server... \n";
+    std::cout << "Player 1: " << _addr1.toString() << ":" << _clientPort << "\n";
+    std::cout << "Player 2: " << _addr2.toString() << ":" << _clientPort << std::endl;
+    
+    
 }
 
-void Server::acceptRequest() {
+void Server::acceptRequest(sf::IpAddress & targetIP) {
     
     size_t received;
     sf::IpAddress remoteAddress;
@@ -76,15 +98,9 @@ void Server::acceptRequest() {
         return;
     }
     
-    if (remoteAddress == _addr1 and remotePort == _clientPort) {
+    if (remoteAddress == targetIP and remotePort == _clientPort) {
         
-        Player & player = _player1;
-        parseRequest(player);
-        
-    }
-    else if (remoteAddress == _addr2 and remotePort == _clientPort) {
-        
-        Player & player = _player2;
+        Player & player = (targetIP == _addr1) ? _player1 : _player2;
         parseRequest(player);
         
     }
@@ -95,9 +111,9 @@ void Server::parseRequest(Player & player) {
     
     std::string data(_receivedData);
     
-    if (data[0] == MOVE) {
+    if (data[1] == LEFT or data[1] == RIGHT) {
         
-        player.move(direction(data[2]));
+        player.move(direction(data[1]));
         
     }
     
@@ -105,34 +121,39 @@ void Server::parseRequest(Player & player) {
 
 void Server::sendData() {
     
+    std::string dataStr = _response.generateResponse();
+    const char * data   = dataStr.c_str();
+    size_t dataLen      = dataStr.length();
     
+    _socket.send(data, dataLen, _addr1, _clientPort);
+    _socket.send(data, dataLen, _addr2, _clientPort);
     
 }
 
 void Server::mainLoop() {
     
-    std::cout << "\u001b[2J\u001b[1;1H" << std::endl;
-    std::cout << "2 players connected, running server... \n";
-    std::cout << "Player 1: " << _addr1.toString() << ":" << _clientPort << "\n";
-    std::cout << "Player 2: " << _addr2.toString() << ":" << _clientPort << std::endl;
-    
     /* Probably don't want a blocking socket anymore, so the server doesn't stop to wait for packet if one client loses connection */
     _socket.setBlocking(false);
     
     sf::Clock timer;
-    sf::Time  elapsedTime;
+    int timeToSleep;
     
     while (true) {
         
         /* Accept and parse requests from both clients */
-        acceptRequest();
-        acceptRequest();
+        acceptRequest(_addr1);
         
-        elapsedTime = timer.restart();
-        /* I hope I can just make the thread sleep */
-        std::this_thread::sleep_for(std::chrono::milliseconds( 15 - elapsedTime.asMilliseconds() ));
+#ifndef NO_2_PLAYERS
+        /* Trying to accept a request from 0.0.0.0 is probably pointless */
+        /* Gotta save the 5 cycles                                       */
+        acceptRequest(_addr2);
+#endif
         
         sendData();
+        
+        timeToSleep = 10 - timer.restart().asMilliseconds();
+        /* I hope I can just make the thread sleep */
+        std::this_thread::sleep_for(std::chrono::milliseconds( timeToSleep ));
         
     }
     

@@ -15,31 +15,17 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
-#define TELEPORT    't'
-#define ATTACK      'a'
-#define DORITO      'd'
-#define MOVE        'm'
-#define JUMP        'j'
-#define LEFT        'l'
-#define RIGHT       'r'
+#include "Entity.hpp"
 
-enum class direction {
+struct Player : public entity {
     
-    left = LEFT,
-    right = RIGHT
-    
-};
-
-struct Player {
-    
-    char hp;
-    unsigned char damage;
-    unsigned char moveSpeed;
+    unsigned char damage = 1;
+    unsigned char moveSpeed = 5;
     unsigned char sprite;
-    sf::Vector2i pos;
+    
     std::unordered_map<char, int> spellCooldown;
     
-    void move(direction dir);
+    void move(direction movementDirection);
     
 };
 
