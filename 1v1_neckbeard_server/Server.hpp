@@ -23,7 +23,7 @@
 #include "macros.hpp"
 #include "Player.hpp"
 #include "Response.hpp"
-
+#include "World.hpp"
 
 class Server {
     
@@ -33,6 +33,7 @@ class Server {
     const unsigned short _clientPort, _serverPort;
     
     Player _player1, _player2;
+    World _world;
     
     char _receivedData[1024];
     

@@ -9,8 +9,7 @@
 #include "Server.hpp"
 
 Server::Server(unsigned short clientPort, unsigned short serverPort) :
-    _clientPort(clientPort), _serverPort(serverPort)
-    {
+    _clientPort(clientPort), _serverPort(serverPort), _player1(_world), _player2(_world) {
     
     if (_socket.bind(_serverPort) != sf::Socket::Done) {
         
@@ -28,11 +27,13 @@ Server::Server(unsigned short clientPort, unsigned short serverPort) :
     /* Width of player is 30                                                   */
     _player1.pos.x = 110;
     _player1.pos.y = 295;
+    _player1.hitbox.setPosition(_player1.pos.x, _player1.pos.y);
     _player1.dir = direction::right;
     _player1.hp = 6;
-    
+        
     _player2.pos.x = 690 - 30;
     _player2.pos.y = 295;
+    _player2.hitbox.setPosition(_player2.pos.x, _player2.pos.y);
     _player2.dir = direction::left;
     _player2.hp = 6;
     
@@ -68,8 +69,10 @@ sf::IpAddress Server::playerConnection() {
 
 void Server::waitForConnection() {
     
-    std::cout << "IP Address: " << sf::IpAddress::getLocalAddress() << "\n" << std::endl;
-    
+    {
+        sf::IpAddress localIP = sf::IpAddress::getLocalAddress();
+        std::cout << "IP Address: " << (localIP.toString() != "0.0.0.0" ? localIP : "None") << "\n" << std::endl;
+    }
     std::cout << "Waiting for connection...\n" << "IP Address 1: None \n" << "IP Address 2: None" << std::endl;
     _addr1 = playerConnection();
     
@@ -111,10 +114,21 @@ void Server::parseRequest(Player & player) {
     
     std::string data(_receivedData);
     
-    if (data[1] == LEFT or data[1] == RIGHT) {
-        
-        player.move(direction(data[1]));
-        
+    char action = data[1];
+    
+    switch (action) {
+            
+        case LEFT:
+        case RIGHT:
+            player.move(direction(action));
+            return;
+        case JUMP:
+            player.jump();
+            return;
+            
+        default:
+            return;
+            
     }
     
 }
@@ -148,6 +162,9 @@ void Server::mainLoop() {
         /* Gotta save the 5 cycles                                       */
         acceptRequest(_addr2);
 #endif
+        
+        _player1.gravity();
+        _player2.gravity();
         
         sendData();
         

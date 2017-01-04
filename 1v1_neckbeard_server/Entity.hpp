@@ -26,9 +26,9 @@ enum class direction {
 
 struct entity {
     
-    sf::Vector2i pos;
     direction dir;
     char hp;
+    sf::Vector2i pos;
     
 };
 

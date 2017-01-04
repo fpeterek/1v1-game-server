@@ -13,6 +13,7 @@
 		4E96B2101E0055A7006463F9 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E96B20A1E0055A7006463F9 /* Player.cpp */; };
 		4E96B2111E0055A7006463F9 /* ResourcePath.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E96B20D1E0055A7006463F9 /* ResourcePath.mm */; };
 		4E96B2121E0055A7006463F9 /* Server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E96B20E1E0055A7006463F9 /* Server.cpp */; };
+		4E9A13D31E1BF9B300FF1034 /* World.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E9A13D11E1BF9B300FF1034 /* World.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,8 @@
 		4E96B20D1E0055A7006463F9 /* ResourcePath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourcePath.mm; sourceTree = "<group>"; };
 		4E96B20E1E0055A7006463F9 /* Server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Server.cpp; sourceTree = "<group>"; };
 		4E96B20F1E0055A7006463F9 /* Server.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Server.hpp; sourceTree = "<group>"; };
+		4E9A13D11E1BF9B300FF1034 /* World.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = World.cpp; sourceTree = "<group>"; };
+		4E9A13D21E1BF9B300FF1034 /* World.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = World.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +74,8 @@
 				4E26EBE01E198FCA0040AFA3 /* Entity.hpp */,
 				4E96B20E1E0055A7006463F9 /* Server.cpp */,
 				4E96B20F1E0055A7006463F9 /* Server.hpp */,
+				4E9A13D11E1BF9B300FF1034 /* World.cpp */,
+				4E9A13D21E1BF9B300FF1034 /* World.hpp */,
 				4E26EBDC1E1988C60040AFA3 /* Response.cpp */,
 				4E26EBDD1E1988C60040AFA3 /* Response.hpp */,
 			);
@@ -135,6 +140,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E96B2111E0055A7006463F9 /* ResourcePath.mm in Sources */,
+				4E9A13D31E1BF9B300FF1034 /* World.cpp in Sources */,
 				4E26EBDE1E1988C60040AFA3 /* Response.cpp in Sources */,
 				4E96B2101E0055A7006463F9 /* Player.cpp in Sources */,
 				4E96B2121E0055A7006463F9 /* Server.cpp in Sources */,
