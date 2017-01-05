@@ -26,7 +26,7 @@ void Player::move(direction movementDirection, bool changeDirection) {
     
     /* Try to move player, if player hitbox intersects with world hitbox, move opposite direction to revert movement */
     if (world.get().checkCollision(hitbox)) {
-        move(movementDirection == direction::left ? direction::right : direction::left, false);
+        pos.x -= moveSpeed * ((movementDirection == direction::left) ? -1 : 1 );
         hitbox.setPosition(pos.x, pos.y);
     }
     
@@ -34,58 +34,64 @@ void Player::move(direction movementDirection, bool changeDirection) {
 
 void Player::jump() {
     
-    if (not force) {
-        force = -7.f;
+    if (canJump) {
+        canJump = false;
+        force = -1.4f;
     }
     
 }
 
-void Player::gravity() {
+void Player::applyForce() {
     
     if (not force) {
-        /* Try to move player down by 8, if it doesn't collide with anything, it means player is airborne */
+        /* Try to move player down by 1, if it doesn't collide with anything, it means player is airborne */
         /* and we should apply gravity                                                                    */
-        pos.y += 8;
+        pos.y += 1;
         hitbox.setPosition(pos.x, pos.y);
         if (not world.get().checkCollision(hitbox)) {
             force = 0.5;
         }
-        pos.y -= 8;
+        pos.y -= 1;
         hitbox.setPosition(pos.x, pos.y);
     }
     /* If force is still zero, that means player is standing on the ground and we can return */
     if (not force) {
+        canJump = true;
         return;
     }
     
     if (force < 0.1 and force > -0.1) {
         force = 0;
+        return;
     }
-    
-    float addedForce = fabsf(force) / 5;
-    force += addedForce;
+    {
+        float addedForce = fabsf(force) / 50;
+        force += addedForce;
+    }
+    if (force > Player::terminalVelocity) {
+        force = Player::terminalVelocity;
+    }
     
     pos.y += force;
     hitbox.setPosition(pos.x, pos.y);
     
-    /* No collision occured, we can return */
-    if (not world.get().checkCollision(hitbox)) {
-        return;
-    }
-    
-    /* Collision occured                                                                             */
-    /* Try to go back by half of what the player moved, if player hitbox still intersects with land, */
-    /* go back by half one more time, otherwise return                                               */
+    /* Loop should be unrolled by compiler, computer will check for collision immediately,               */
+    /* if it detects no collision it returns, otherwise it                                               */
+    /* tries to go back by half of what the player moved, if player hitbox still intersects with ground, */
+    /* go back by half one more time                                                                     */
     for (int i = 0; i < 2; ++i) {
         
         if (world.get().checkCollision(hitbox)) {
-            pos.y -= force / 2;
+            pos.y -= (force / 2);
             hitbox.setPosition(pos.x, pos.y);
+        } else {
+            if (i) {
+                force = 0;
+            }
             return;
         }
         
     }
-    
     /* Player probably hit something, reset force to 0, if player still hasn't landed on the ground, */
     /* force will be reapplied next iteration of main loop                                           */
     force = 0;

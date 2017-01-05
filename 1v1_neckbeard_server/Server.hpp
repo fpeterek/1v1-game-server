@@ -35,7 +35,7 @@ class Server {
     Player _player1, _player2;
     World _world;
     
-    char _receivedData[1024];
+    char _receivedData[255];
     
     sf::IpAddress playerConnection();
     void waitForConnection();

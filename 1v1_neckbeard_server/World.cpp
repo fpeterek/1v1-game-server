@@ -26,9 +26,9 @@ World::World() {
     /* Platform */ {
         
         /* I want the actual hitbox to be lower than the grass, so the player can walk in the grass, not on top of it */
-        sf::RectangleShape rect( sf::Vector2f(384, 32 - 10) );
+        sf::RectangleShape rect( sf::Vector2f(384, 32 - 6) );
         rect.setOrigin(384 / 2, 0);
-        rect.setPosition(400, 250 + 10);
+        rect.setPosition(400, 250 + 6);
         _colliders.emplace_back(rect);
         
     }
@@ -36,8 +36,8 @@ World::World() {
     /* Ground */ {
         
         /* I want the actual hitbox to be lower than the grass, so the player can walk in the grass, not on top of it */
-        sf::RectangleShape rect( sf::Vector2f(800, 64 - 10) );
-        rect.setPosition(0, 450 - 64 + 10);
+        sf::RectangleShape rect( sf::Vector2f(800, 64 - 6) );
+        rect.setPosition(0, 450 - 64 + 6);
         _colliders.emplace_back(rect);
         
     }

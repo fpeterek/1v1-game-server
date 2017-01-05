@@ -19,8 +19,9 @@
 struct Player : public entity {
     
     unsigned char damage    = 1;
-    unsigned char moveSpeed = 5;
+    unsigned char moveSpeed = 1;
     unsigned char sprite    = 0;
+    bool canJump;
     /* Force that affects the player, negative force brings the player up, positive force brings the player down */
     float force = 0;
     constexpr static const float terminalVelocity = 7.f;
@@ -33,7 +34,7 @@ struct Player : public entity {
     
     void move(direction movementDirection, bool changeDirection = true);
     void jump();
-    void gravity();
+    void applyForce();
     
     Player(World & newWorld);
     

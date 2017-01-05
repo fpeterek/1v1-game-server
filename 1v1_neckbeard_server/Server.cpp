@@ -97,7 +97,7 @@ void Server::acceptRequest(sf::IpAddress & targetIP) {
     sf::IpAddress remoteAddress;
     unsigned short remotePort;
     
-    if (_socket.receive(_receivedData, 1024, received, remoteAddress, remotePort) != sf::Socket::Done) {
+    if (_socket.receive(_receivedData, 255, received, remoteAddress, remotePort) != sf::Socket::Done) {
         return;
     }
     
@@ -113,21 +113,27 @@ void Server::acceptRequest(sf::IpAddress & targetIP) {
 void Server::parseRequest(Player & player) {
     
     std::string data(_receivedData);
-    
-    char action = data[1];
-    
-    switch (action) {
-            
-        case LEFT:
-        case RIGHT:
-            player.move(direction(action));
-            return;
-        case JUMP:
-            player.jump();
-            return;
-            
-        default:
-            return;
+    std::cout << data << std::endl;
+    char action;
+    /* Request won't be greater than 255 bytes, so I can use unsigned char, because it will never overflow */
+    for (unsigned char iter = 1; action != '}'; ++iter) {
+        
+        action = data[iter];
+        
+        switch (action) {
+                
+            case LEFT:
+            case RIGHT:
+                player.move(direction(action));
+                break;
+            case JUMP:
+                player.jump();
+                break;
+                
+            default:
+                break;
+                
+        }
             
     }
     
@@ -163,8 +169,8 @@ void Server::mainLoop() {
         acceptRequest(_addr2);
 #endif
         
-        _player1.gravity();
-        _player2.gravity();
+        _player1.applyForce();
+        _player2.applyForce();
         
         sendData();
         

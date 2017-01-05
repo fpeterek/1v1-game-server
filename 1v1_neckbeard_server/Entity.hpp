@@ -28,7 +28,7 @@ struct entity {
     
     direction dir;
     char hp;
-    sf::Vector2i pos;
+    sf::Vector2f pos;
     
 };
 
