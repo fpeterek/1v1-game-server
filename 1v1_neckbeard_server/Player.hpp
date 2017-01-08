@@ -20,7 +20,6 @@ struct Player : public entity {
     
     unsigned char damage    = 1;
     unsigned char moveSpeed = 1;
-    unsigned char sprite    = 0;
     bool canJump;
     /* Force that affects the player, negative force brings the player up, positive force brings the player down */
     float force = 0;
@@ -32,7 +31,7 @@ struct Player : public entity {
     
     std::unordered_map<char, int> spellCooldown;
     
-    void move(direction movementDirection, bool changeDirection = true);
+    void move(direction movementDirection);
     void jump();
     void applyForce();
     

@@ -29,6 +29,7 @@ struct entity {
     direction dir;
     char hp;
     sf::Vector2f pos;
+    unsigned char sprite = 0;
     
 };
 

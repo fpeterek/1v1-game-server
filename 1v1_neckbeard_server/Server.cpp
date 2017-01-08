@@ -113,12 +113,12 @@ void Server::acceptRequest(sf::IpAddress & targetIP) {
 void Server::parseRequest(Player & player) {
     
     std::string data(_receivedData);
-    std::cout << data << std::endl;
-    char action;
-    /* Request won't be greater than 255 bytes, so I can use unsigned char, because it will never overflow */
-    for (unsigned char iter = 1; action != '}'; ++iter) {
-        
-        action = data[iter];
+    
+    /* Request won't be greater than 255 bytes, so I can use an unsigned char, because it will never overflow */
+    unsigned char iter = 1;
+    char action = data[iter];
+    
+    while (action != '}') {
         
         switch (action) {
                 
@@ -134,6 +134,8 @@ void Server::parseRequest(Player & player) {
                 break;
                 
         }
+        
+        action = data[++iter];
             
     }
     
@@ -146,7 +148,9 @@ void Server::sendData() {
     size_t dataLen      = dataStr.length();
     
     _socket.send(data, dataLen, _addr1, _clientPort);
+#ifndef NO_2_PLAYERS
     _socket.send(data, dataLen, _addr2, _clientPort);
+#endif
     
 }
 
@@ -174,7 +178,7 @@ void Server::mainLoop() {
         
         sendData();
         
-        timeToSleep = 10 - timer.restart().asMilliseconds();
+        timeToSleep = 15 - timer.restart().asMilliseconds();
         /* I hope I can just make the thread sleep */
         std::this_thread::sleep_for(std::chrono::milliseconds( timeToSleep ));
         

@@ -15,11 +15,9 @@ Player::Player(World & newWorld) : world(newWorld) {
 
 }
 
-void Player::move(direction movementDirection, bool changeDirection) {
+void Player::move(direction movementDirection) {
     
-    if (changeDirection) {
-        dir = movementDirection;
-    }
+    dir = movementDirection;
     
     pos.x += moveSpeed * ((movementDirection == direction::left) ? -1 : 1 );
     hitbox.setPosition(pos.x, pos.y);
@@ -36,7 +34,7 @@ void Player::jump() {
     
     if (canJump) {
         canJump = false;
-        force = -1.4f;
+        force = -2.8f;
     }
     
 }
@@ -65,7 +63,7 @@ void Player::applyForce() {
         return;
     }
     {
-        float addedForce = fabsf(force) / 50;
+        float addedForce = fabsf(force) / 25;
         force += addedForce;
     }
     if (force > Player::terminalVelocity) {

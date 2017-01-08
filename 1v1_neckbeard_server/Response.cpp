@@ -21,7 +21,8 @@ std::string Response::generateResponse() {
     for (auto & e : _entities) {
         
         response << "{";
-        response << (int)e.get().pos.x << "," << (int)e.get().pos.y << "," << (char)e.get().dir << "," << (int)e.get().hp;
+        response << (int)e.get().pos.x << "," << (int)e.get().pos.y << "," << (char)e.get().dir << ","
+                 << (int)e.get().hp << "," << (int)e.get().sprite;
         response << "}";
         
     }
