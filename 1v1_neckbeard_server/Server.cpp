@@ -9,7 +9,10 @@
 #include "Server.hpp"
 
 Server::Server(unsigned short clientPort, unsigned short serverPort) :
-    _clientPort(clientPort), _serverPort(serverPort), _player1(_world), _player2(_world) {
+        _clientPort(clientPort),
+        _serverPort(serverPort),
+        _player1(_world),
+        _player2(_world) {
     
     if (_socket.bind(_serverPort) != sf::Socket::Done) {
         
@@ -22,6 +25,17 @@ Server::Server(unsigned short clientPort, unsigned short serverPort) :
     _response.addEntity(_player1);
     _response.addEntity(_player2);
     
+    initPlayers();
+    
+    waitForConnection();
+    /* Restart clock before doing anything else */
+    _clock.restart();
+    mainLoop();
+    
+}
+
+void Server::initPlayers() {
+    
     /* Player sprite is 10 pixels wide without hair (hitbox is 10 pixels wide) */
     /* Player sprite is scaled up by 3, therefor the hitbox is 10 * 3          */
     /* Width of player is 30                                                   */
@@ -30,15 +44,12 @@ Server::Server(unsigned short clientPort, unsigned short serverPort) :
     _player1.hitbox.setPosition(_player1.pos.x, _player1.pos.y);
     _player1.dir = direction::right;
     _player1.hp = 6;
-        
+    
     _player2.pos.x = 690 - 30;
     _player2.pos.y = 295;
     _player2.hitbox.setPosition(_player2.pos.x, _player2.pos.y);
     _player2.dir = direction::left;
     _player2.hp = 6;
-    
-    waitForConnection();
-    mainLoop();
     
 }
 
@@ -96,14 +107,17 @@ void Server::acceptRequest(sf::IpAddress & targetIP) {
     size_t received;
     sf::IpAddress remoteAddress;
     unsigned short remotePort;
+    Player & player = (targetIP == _addr1) ? _player1 : _player2;
     
     if (_socket.receive(_receivedData, 255, received, remoteAddress, remotePort) != sf::Socket::Done) {
+        
+        player.resetSprite();
         return;
+        
     }
     
     if (remoteAddress == targetIP and remotePort == _clientPort) {
         
-        Player & player = (targetIP == _addr1) ? _player1 : _player2;
         parseRequest(player);
         
     }
@@ -154,13 +168,21 @@ void Server::sendData() {
     
 }
 
+void Server::sleep(const unsigned int milliseconds) {
+    
+    static int timeSlept = 0;
+    int timeToSleep = milliseconds - _clock.restart().asMilliseconds() + (timeSlept < 0 ? timeSlept : 0);
+    std::this_thread::sleep_for( std::chrono::milliseconds(timeToSleep) );
+    timeSlept = timeToSleep;
+    // std::cout << "Time slept: " << timeSlept << std::endl;
+
+}
+
 void Server::mainLoop() {
     
-    /* Probably don't want a blocking socket anymore, so the server doesn't stop to wait for packet if one client loses connection */
+    /* Probably don't want a blocking socket anymore, so the server doesn't stop to wait for */
+    /* packet if one client loses connection                                                 */
     _socket.setBlocking(false);
-    
-    sf::Clock timer;
-    int timeToSleep;
     
     while (true) {
         
@@ -178,9 +200,8 @@ void Server::mainLoop() {
         
         sendData();
         
-        timeToSleep = 15 - timer.restart().asMilliseconds();
         /* I hope I can just make the thread sleep */
-        std::this_thread::sleep_for(std::chrono::milliseconds( timeToSleep ));
+        sleep(15);
         
     }
     

@@ -15,7 +15,17 @@ Player::Player(World & newWorld) : world(newWorld) {
 
 }
 
+void Player::resetSprite() {
+    
+    frameCounter = 0;
+    sprite = 0;
+    
+}
+
 void Player::move(direction movementDirection) {
+    
+    ++frameCounter;
+    sprite = (int)ceilf(frameCounter / 27.f) % 4;
     
     dir = movementDirection;
     
@@ -62,6 +72,7 @@ void Player::applyForce() {
         force = 0;
         return;
     }
+    resetSprite();
     {
         float addedForce = fabsf(force) / 25;
         force += addedForce;

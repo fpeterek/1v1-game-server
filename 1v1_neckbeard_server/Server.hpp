@@ -32,6 +32,8 @@ class Server {
     
     const unsigned short _clientPort, _serverPort;
     
+    sf::Clock _clock;
+    
     Player _player1, _player2;
     World _world;
     
@@ -47,6 +49,10 @@ class Server {
     void parseRequest(Player & player);
     
     void sendData();
+    
+    void sleep(const unsigned int milliseconds);
+    
+    void initPlayers();
     
 public:
     
