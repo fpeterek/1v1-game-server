@@ -29,7 +29,9 @@ struct entity {
     direction dir;
     char hp;
     sf::Vector2f pos;
+    /* Just for polymorphism */
     unsigned char sprite = 0;
+    unsigned short victoryCounter();
     
 };
 

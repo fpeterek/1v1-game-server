@@ -25,7 +25,7 @@ Server::Server(unsigned short clientPort, unsigned short serverPort) :
     _response.addEntity(_player1);
     _response.addEntity(_player2);
     
-    initPlayers();
+    resetPlayers();
     
     waitForConnection();
     /* Restart clock before doing anything else */
@@ -34,20 +34,20 @@ Server::Server(unsigned short clientPort, unsigned short serverPort) :
     
 }
 
-void Server::initPlayers() {
+void Server::resetPlayers() {
     
     /* Player sprite is 10 pixels wide without hair (hitbox is 10 pixels wide) */
     /* Player sprite is scaled up by 3, therefor the hitbox is 10 * 3          */
     /* Width of player is 30                                                   */
     _player1.pos.x = 110;
     _player1.pos.y = 295;
-    _player1.hitbox.setPosition(_player1.pos.x, _player1.pos.y);
+    _player1.getHitbox().setPosition(_player1.pos.x, _player1.pos.y);
     _player1.dir = direction::right;
     _player1.hp = 6;
     
     _player2.pos.x = 690 - 30;
     _player2.pos.y = 295;
-    _player2.hitbox.setPosition(_player2.pos.x, _player2.pos.y);
+    _player2.getHitbox().setPosition(_player2.pos.x, _player2.pos.y);
     _player2.dir = direction::left;
     _player2.hp = 6;
     
@@ -80,10 +80,7 @@ sf::IpAddress Server::playerConnection() {
 
 void Server::waitForConnection() {
     
-    {
-        sf::IpAddress localIP = sf::IpAddress::getLocalAddress();
-        std::cout << "IP Address: " << (localIP.toString() != "0.0.0.0" ? localIP : "None") << "\n" << std::endl;
-    }
+    std::cout << "IP Address: " << sf::IpAddress::getLocalAddress() << "\n" << std::endl;
     std::cout << "Waiting for connection...\n" << "IP Address 1: None \n" << "IP Address 2: None" << std::endl;
     _addr1 = playerConnection();
     
@@ -109,10 +106,11 @@ void Server::acceptRequest(sf::IpAddress & targetIP) {
     unsigned short remotePort;
     Player & player = (targetIP == _addr1) ? _player1 : _player2;
     
-    if (_socket.receive(_receivedData, 255, received, remoteAddress, remotePort) != sf::Socket::Done) {
+    sf::Socket::Status status = _socket.receive(_receivedData, 255, received, remoteAddress, remotePort);
+    
+    if (status != sf::Socket::Done or not player.canPerformAction()) {
         
-        player.resetSprite();
-        return;
+        return player.update();
         
     }
     
@@ -142,6 +140,9 @@ void Server::parseRequest(Player & player) {
                 break;
             case JUMP:
                 player.jump();
+                break;
+            case ATTACK:
+                player.attack();
                 break;
                 
             default:
@@ -194,6 +195,15 @@ void Server::mainLoop() {
         /* Gotta save the 5 cycles                                       */
         acceptRequest(_addr2);
 #endif
+        
+        if (_player1.hp <= 0) {
+            _player2.incrementVictoryCounter();
+            resetPlayers();
+        }
+        else if (_player2.hp <= 0) {
+            _player1.incrementVictoryCounter();
+            resetPlayers();
+        }
         
         _player1.applyForce();
         _player2.applyForce();

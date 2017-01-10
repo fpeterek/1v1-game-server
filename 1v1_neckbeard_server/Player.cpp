@@ -8,81 +8,152 @@
 
 #include "Player.hpp"
 
-Player::Player(World & newWorld) : world(newWorld) {
+Player::Player(World & newWorld) : _world(newWorld) {
 
     /* 10x32 are the dimensions of the sprite, but the sprite is then scaled up by 3 */
-    hitbox.setSize(sf::Vector2f(30, 96));
+    _hitbox.setSize(sf::Vector2f(30, 96));
+    
+    _attackHitbox.setSize(sf::Vector2f(72, 6));
+    _attackHitbox.setPosition(0, 0);
 
+}
+
+void Player::incrementVictoryCounter() {
+    ++_gamesWon;
+}
+
+unsigned short Player::victoryCounter() {
+    return _gamesWon;
+}
+
+bool Player::canPerformAction() {
+    
+    return not _attackCounter;
+    
+}
+
+void Player::resetAttackHitbox() {
+    
+    _attackHitbox.setPosition(0, 0);
+    
+}
+
+void Player::attack() {
+    
+    /* Can't attack mid-jump */
+    if (_force) {
+        return;
+    }
+    
+    if (_attackCounter == 60 or _attackCounter == 20) {
+        
+        _attackHitbox.setRotation( 180 * (dir == direction::left) );
+        _attackHitbox.setPosition(pos.x, pos.y + 96 / 2);
+        
+    }
+    
+    /*
+    std::cout << "Player at position [" << pos.x << ", " << pos.y << "], attack hitbox at position ["
+              << _attackHitbox.getPosition().x << ", " << _attackHitbox.getPosition().y << "] Attack hitbox rotation: "
+              << _attackHitbox.getRotation() << std::endl;
+    */
+    
+    ++_attackCounter;
+    _frameCounter = _attackCounter;
+    sprite = (_attackCounter / 20) + 4;
+    
+    if (_attackCounter == 79) {
+        resetAttackHitbox();
+        _attackCounter = 0;
+    }
+    
+}
+
+void Player::update() {
+    
+    if (_attackCounter) {
+        attack();
+    }
+    else {
+        resetSprite();
+    }
+    
+}
+
+sf::RectangleShape & Player::getHitbox() {
+    
+    return _hitbox;
+    
 }
 
 void Player::resetSprite() {
     
-    frameCounter = 0;
+    _frameCounter = 0;
     sprite = 0;
     
 }
 
 void Player::move(direction movementDirection) {
     
-    ++frameCounter;
-    sprite = (int)ceilf(frameCounter / 27.f) % 4;
+    ++_frameCounter;
+    sprite = (int)ceilf(_frameCounter / 27.f) % 4;
     
     dir = movementDirection;
     
-    pos.x += moveSpeed * ((movementDirection == direction::left) ? -1 : 1 );
-    hitbox.setPosition(pos.x, pos.y);
+    pos.x += _moveSpeed * ((movementDirection == direction::left) ? -1 : 1 );
+    _hitbox.setPosition(pos.x, pos.y);
     
     /* Try to move player, if player hitbox intersects with world hitbox, move opposite direction to revert movement */
-    if (world.get().checkCollision(hitbox)) {
-        pos.x -= moveSpeed * ((movementDirection == direction::left) ? -1 : 1 );
-        hitbox.setPosition(pos.x, pos.y);
+    if (_world.get().checkCollision(_hitbox)) {
+        pos.x -= _moveSpeed * ((movementDirection == direction::left) ? -1 : 1 );
+        _hitbox.setPosition(pos.x, pos.y);
     }
     
 }
 
 void Player::jump() {
     
-    if (canJump) {
-        canJump = false;
-        force = -2.8f;
+    if (_canJump) {
+        _canJump = false;
+        _force = -2.8f;
     }
     
 }
 
 void Player::applyForce() {
     
-    if (not force) {
+    if (not _force) {
         /* Try to move player down by 1, if it doesn't collide with anything, it means player is airborne */
         /* and we should apply gravity                                                                    */
         pos.y += 1;
-        hitbox.setPosition(pos.x, pos.y);
-        if (not world.get().checkCollision(hitbox)) {
-            force = 0.5;
+        _hitbox.setPosition(pos.x, pos.y);
+        if (not _world.get().checkCollision(_hitbox)) {
+            _force = 0.5;
         }
         pos.y -= 1;
-        hitbox.setPosition(pos.x, pos.y);
+        _hitbox.setPosition(pos.x, pos.y);
     }
     /* If force is still zero, that means player is standing on the ground and we can return */
-    if (not force) {
-        canJump = true;
+    if (not _force) {
+        _canJump = true;
         return;
     }
     
-    if (force < 0.1 and force > -0.1) {
-        force = 0;
+    if (_force < 0.1 and _force > -0.1) {
+        _force = 0;
         return;
     }
     resetSprite();
     {
-        float addedForce = fabsf(force) / 25;
-        force += addedForce;
+        float addedForce = fabsf(_force) / 25;
+        _force += addedForce;
     }
-    if (force > Player::terminalVelocity) {
-        force = Player::terminalVelocity;
+    if (_force > Player::terminalVelocity) {
+        _force = Player::terminalVelocity;
     }
     
-    pos.y += force;
-    hitbox.setPosition(pos.x, pos.y);
+    pos.y += _force;
+    _hitbox.setPosition(pos.x, pos.y);
     
     /* Loop should be unrolled by compiler, computer will check for collision immediately,               */
     /* if it detects no collision it returns, otherwise it                                               */
@@ -90,19 +161,17 @@ void Player::applyForce() {
     /* go back by half one more time                                                                     */
     for (int i = 0; i < 2; ++i) {
         
-        if (world.get().checkCollision(hitbox)) {
-            pos.y -= (force / 2);
-            hitbox.setPosition(pos.x, pos.y);
+        if (_world.get().checkCollision(_hitbox)) {
+            pos.y -= (_force / 2);
+            _hitbox.setPosition(pos.x, pos.y);
         } else {
-            if (i) {
-                force = 0;
-            }
+            _force *= not i;
             return;
         }
         
     }
     /* Player probably hit something, reset force to 0, if player still hasn't landed on the ground, */
     /* force will be reapplied next iteration of main loop                                           */
-    force = 0;
+    _force = 0;
     
 }

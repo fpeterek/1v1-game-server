@@ -16,26 +16,38 @@
 #include "Entity.hpp"
 #include "World.hpp"
 
-struct Player : public entity {
+class Player : public entity {
     
-    unsigned long frameCounter = 0;
-    unsigned char damage       = 1;
-    unsigned char moveSpeed    = 1;
-    bool canJump;
+    unsigned long  _frameCounter  = 0;
+    unsigned char  _damage        = 1;
+    unsigned char  _moveSpeed     = 1;
+    unsigned char  _attackCounter = 0;
+    unsigned short _gamesWon      = 0;
+    bool           _canJump;
     /* Force that affects the player, negative force brings the player up, positive force brings the player down */
-    float force = 0;
+    float _force = 0;
     constexpr static const float terminalVelocity = 7.f;
     
-    std::reference_wrapper<World> world;
+    std::reference_wrapper<World> _world;
     
-    sf::RectangleShape hitbox;
+    sf::RectangleShape _hitbox;
+    sf::RectangleShape _attackHitbox;
     
-    std::unordered_map<char, int> spellCooldown;
+    std::unordered_map<char, int> _spellCooldown;
     
+public:
+    
+    sf::RectangleShape & getHitbox();
     void move(direction movementDirection);
+    void attack();
     void jump();
     void applyForce();
     void resetSprite();
+    void update();
+    bool canPerformAction();
+    void resetAttackHitbox();
+    unsigned short victoryCounter();
+    void incrementVictoryCounter();
     
     Player(World & newWorld);
     

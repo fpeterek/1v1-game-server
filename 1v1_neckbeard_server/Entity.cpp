@@ -7,3 +7,8 @@
 //
 
 #include "Entity.hpp"
+
+
+unsigned short entity::victoryCounter() {
+    return 0;
+}

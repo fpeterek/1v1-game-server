@@ -13,45 +13,17 @@
 
 #include "Server.hpp"
 
+
 int main(int argc, const char * argv[]) {
     
-    
-    // sf::RenderWindow window(sf::VideoMode(800, 600), "SFML window");
-
-    /*
-    sf::Font font;
-    if (!font.loadFromFile(resourcePath() + "sansation.ttf")) {
-        return EXIT_FAILURE;
-    }
-    sf::Text text("Hello SFML", font, 50);
-    text.setColor(sf::Color::Black);
-     */
-    
     try {
+    
         Server(PORT_CLIENT, PORT_SERVER);
+    
     } catch (std::runtime_error & e) {
+    
         std::cout << e.what() << std::endl;
+    
     }
     
-    /*
-    while (window.isOpen()) {
-        
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            
-            if (event.type == sf::Event::Closed) {
-                window.close();
-            }
-
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
-                window.close();
-            }
-
-        }
-
-        window.clear();
-        window.display();
-
-    }
-    */
 }
