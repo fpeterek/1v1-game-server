@@ -39,17 +39,25 @@ void Server::resetPlayers() {
     /* Player sprite is 10 pixels wide without hair (hitbox is 10 pixels wide) */
     /* Player sprite is scaled up by 3, therefor the hitbox is 10 * 3          */
     /* Width of player is 30                                                   */
-    _player1.pos.x = 110;
-    _player1.pos.y = 295;
-    _player1.getHitbox().setPosition(_player1.pos.x, _player1.pos.y);
-    _player1.dir = direction::right;
-    _player1.hp = 6;
+    _player1.position().x = 110;
+    _player1.position().y = 295;
+    _player1.direction() = direction::right;
     
-    _player2.pos.x = 690 - 30;
-    _player2.pos.y = 295;
-    _player2.getHitbox().setPosition(_player2.pos.x, _player2.pos.y);
-    _player2.dir = direction::left;
-    _player2.hp = 6;
+    _player2.position().x = 690 - 30;
+#ifdef TEMPORARY_MOVE_PLAYER2
+    _player2.position().x -= 200;
+#endif
+    _player2.position().y = 295;
+    _player2.direction() = direction::left;
+    
+    auto init = [&] (Player & player) -> void {
+        player.resetAttack();
+        player.getHitbox().setPosition(player.position().x, player.position().y);
+        player.hp() = 6;
+    };
+    
+    init(_player1);
+    init(_player2);
     
 }
 
@@ -179,6 +187,39 @@ void Server::sleep(const unsigned int milliseconds) {
 
 }
 
+void Server::updatePlayers() {
+    
+    _player1.applyForce();
+    _player2.applyForce();
+    
+    if (_player1.collidesWith(_player2.getSwordHitbox())) {
+        
+        _player1.takeDamage();
+        _player2.resetAttackHitbox();
+        
+    }
+    
+    if (_player2.collidesWith(_player1.getSwordHitbox())) {
+        
+        _player2.takeDamage();
+        _player1.resetAttackHitbox();
+        
+    }
+    
+    if (_player1.hp() <= 0) {
+        
+        _player2.incrementVictoryCounter();
+        resetPlayers();
+    
+    } else if (_player2.hp() <= 0) {
+        
+        _player1.incrementVictoryCounter();
+        resetPlayers();
+    
+    }
+    
+}
+
 void Server::mainLoop() {
     
     /* Probably don't want a blocking socket anymore, so the server doesn't stop to wait for */
@@ -196,17 +237,7 @@ void Server::mainLoop() {
         acceptRequest(_addr2);
 #endif
         
-        if (_player1.hp <= 0) {
-            _player2.incrementVictoryCounter();
-            resetPlayers();
-        }
-        else if (_player2.hp <= 0) {
-            _player1.incrementVictoryCounter();
-            resetPlayers();
-        }
-        
-        _player1.applyForce();
-        _player2.applyForce();
+        updatePlayers();
         
         sendData();
         

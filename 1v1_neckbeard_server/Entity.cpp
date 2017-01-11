@@ -12,3 +12,16 @@
 unsigned short entity::victoryCounter() {
     return 0;
 }
+
+direction & entity::direction() {
+    return _dir;
+}
+
+
+char & entity::hp() {
+    return _hp;
+}
+
+sf::Vector2f & entity::position() {
+    return _pos;
+}

@@ -24,14 +24,23 @@ enum class direction {
     
 };
 
-struct entity {
+class entity {
     
-    direction dir;
-    char hp;
-    sf::Vector2f pos;
+protected:
+    direction _dir;
+    char _hp;
+    sf::Vector2f _pos;
+    
+public:
+    
+    /* These all just return a reference since they are freely modifiable anyway and getters make no sense */
+    direction & direction();
+    char & hp();
+    sf::Vector2f & position();
+    
     /* Just for polymorphism */
-    unsigned char sprite = 0;
-    unsigned short victoryCounter();
+    virtual unsigned char & sprite() = 0;
+    virtual unsigned short victoryCounter() = 0;
     
 };
 

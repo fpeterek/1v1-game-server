@@ -18,8 +18,8 @@
 
 class Player : public entity {
     
+    unsigned char  _sprite        = 0;
     unsigned long  _frameCounter  = 0;
-    unsigned char  _damage        = 1;
     unsigned char  _moveSpeed     = 1;
     unsigned char  _attackCounter = 0;
     unsigned short _gamesWon      = 0;
@@ -38,16 +38,24 @@ class Player : public entity {
 public:
     
     sf::RectangleShape & getHitbox();
-    void move(direction movementDirection);
+    const sf::RectangleShape & getSwordHitbox();
+    
+    void move(enum direction movementDirection);
     void attack();
     void jump();
     void applyForce();
     void resetSprite();
     void update();
-    bool canPerformAction();
-    void resetAttackHitbox();
-    unsigned short victoryCounter();
+    void resetAttackHitbox(); /* Only resets the hitbox */
+    void resetAttack(); /* Resets the hitbox as well as the counter and stops the animation */
     void incrementVictoryCounter();
+    void takeDamage();
+    
+    bool collidesWith(const sf::Shape & shape);
+    bool canPerformAction();
+
+    unsigned char & sprite() override;
+    unsigned short victoryCounter() override;
     
     Player(World & newWorld);
     

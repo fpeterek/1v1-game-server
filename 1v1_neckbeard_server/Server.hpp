@@ -52,6 +52,8 @@ class Server {
     
     void sleep(const unsigned int milliseconds);
     
+    void updatePlayers();
+    
     void resetPlayers();
     
 public:

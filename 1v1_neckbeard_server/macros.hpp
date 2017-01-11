@@ -20,5 +20,6 @@
 #define RIGHT       'r'
 
 #define NO_2_PLAYERS // If defined, server won't wait for second player to connect, used for debugging
+#define TEMPORARY_MOVE_PLAYER2 // If defined, player 2 will spawn more in the middle - useful for hitbox testing
 
 #endif /* macros_hpp */
