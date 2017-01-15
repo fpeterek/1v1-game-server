@@ -14,7 +14,7 @@ Player::Player(World & newWorld) : _world(newWorld) {
     _hitbox.setSize(sf::Vector2f(30, 96));
     
     /* 64 seems just about right - the sword needs to touch the other player */
-    /* and the dagger needs to completely penetrate his body                 */
+    /* and the dagger needs to completely penetrate the body                 */
     _attackHitbox.setSize(sf::Vector2f(64, 6));
     _attackHitbox.setPosition(0, 0);
 
@@ -30,7 +30,7 @@ unsigned short Player::victoryCounter() {
 
 bool Player::canPerformAction() {
     
-    return not _attackCounter;
+    return not(_attackCounter or _doritoCounter);
     
 }
 
@@ -47,10 +47,19 @@ void Player::resetAttack() {
     
 }
 
+void Player::throwDorito() {
+    
+    /* Doritos can be thrown mid-jump but not mid-attack */
+    if (_attackCounter) {
+        return;
+    }
+    
+}
+
 void Player::attack() {
     
-    /* Can't attack mid-jump */
-    if (_force) {
+    /* Can't attack mid-jump or mid-dorito throw */
+    if (_force or _doritoCounter) {
         return;
     }
     
@@ -81,10 +90,17 @@ void Player::update() {
     
     if (_attackCounter) {
         attack();
-    }
-    else {
+    } else if (_doritoCounter) {
+        throwDorito();
+    } else {
         resetSprite();
     }
+    
+}
+
+Dorito & Player::getDorito() {
+    
+    return _dorito;
     
 }
 
@@ -199,11 +215,5 @@ const sf::RectangleShape & Player::getSwordHitbox() {
 void Player::takeDamage() {
     
     --_hp;
-    
-}
-
-unsigned char & Player::sprite() {
-    
-    return _sprite;
     
 }

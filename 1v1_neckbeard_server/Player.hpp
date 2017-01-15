@@ -14,16 +14,18 @@
 #include <functional>
 
 #include "Entity.hpp"
+#include "Dorito.hpp"
 #include "World.hpp"
 
 class Player : public entity {
     
-    unsigned char  _sprite        = 0;
     unsigned long  _frameCounter  = 0;
     unsigned char  _moveSpeed     = 1;
     unsigned char  _attackCounter = 0;
+    unsigned char  _doritoCounter = 0;
     unsigned short _gamesWon      = 0;
     bool           _canJump;
+    Dorito         _dorito;
     /* Force that affects the player, negative force brings the player up, positive force brings the player down */
     float _force = 0;
     constexpr static const float terminalVelocity = 7.f;
@@ -40,8 +42,11 @@ public:
     sf::RectangleShape & getHitbox();
     const sf::RectangleShape & getSwordHitbox();
     
+    Dorito & getDorito();
+    
     void move(enum direction movementDirection);
     void attack();
+    void throwDorito();
     void jump();
     void applyForce();
     void resetSprite();
@@ -54,7 +59,6 @@ public:
     bool collidesWith(const sf::Shape & shape);
     bool canPerformAction();
 
-    unsigned char & sprite() override;
     unsigned short victoryCounter() override;
     
     Player(World & newWorld);

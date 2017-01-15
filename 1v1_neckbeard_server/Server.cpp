@@ -24,6 +24,8 @@ Server::Server(unsigned short clientPort, unsigned short serverPort) :
     
     _response.addEntity(_player1);
     _response.addEntity(_player2);
+    _response.addEntity(_player1.getDorito());
+    _response.addEntity(_player2.getDorito());
     
     resetPlayers();
     
@@ -151,6 +153,9 @@ void Server::parseRequest(Player & player) {
                 break;
             case ATTACK:
                 player.attack();
+                break;
+            case DORITO:
+                player.throwDorito();
                 break;
                 
             default:

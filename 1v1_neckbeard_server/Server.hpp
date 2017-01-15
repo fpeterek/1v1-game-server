@@ -22,6 +22,7 @@
 
 #include "macros.hpp"
 #include "Player.hpp"
+#include "Dorito.hpp"
 #include "Response.hpp"
 #include "World.hpp"
 

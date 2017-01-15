@@ -29,6 +29,7 @@ class entity {
 protected:
     direction _dir;
     char _hp;
+    unsigned char _sprite;
     sf::Vector2f _pos;
     
 public:
@@ -39,7 +40,7 @@ public:
     sf::Vector2f & position();
     
     /* Just for polymorphism */
-    virtual unsigned char & sprite() = 0;
+    virtual unsigned char & sprite();
     virtual unsigned short victoryCounter() = 0;
     
 };

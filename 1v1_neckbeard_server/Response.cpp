@@ -10,7 +10,8 @@
 
 void Response::addEntity(entity & newEntity) {
     
-    _entities.emplace_back( newEntity );
+    std::reference_wrapper<entity> ref = newEntity;
+    _entities.emplace_back( ref );
     
 }
 

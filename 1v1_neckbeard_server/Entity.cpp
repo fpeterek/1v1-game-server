@@ -13,6 +13,10 @@ unsigned short entity::victoryCounter() {
     return 0;
 }
 
+unsigned char & entity::sprite() {
+    return _sprite;
+}
+
 direction & entity::direction() {
     return _dir;
 }
