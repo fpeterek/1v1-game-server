@@ -23,8 +23,11 @@ class Dorito : public entity {
     
 public:
     
-    void move(enum direction dir);
+    Dorito();
     
+    const sf::RectangleShape & getHitbox();
+    
+    void move();
     unsigned short victoryCounter() override;
     
 };

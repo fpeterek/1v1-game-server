@@ -26,9 +26,9 @@ World::World() {
     /* Platform */ {
         
         /* I want the actual hitbox to be lower than the grass, so the player can walk in the grass, not on top of it */
-        sf::RectangleShape rect( sf::Vector2f(384, 32 - 6) );
-        rect.setOrigin(384 / 2, 0);
-        rect.setPosition(400, 250 + 6);
+        sf::RectangleShape rect( sf::Vector2f(320, 32 - 6) );
+        rect.setOrigin(320 / 2, 0);
+        rect.setPosition(400, 220 + 6);
         _colliders.emplace_back(rect);
         
     }
@@ -42,9 +42,40 @@ World::World() {
         
     }
     
+    /* Crates */ {
+        
+        auto initCrate = [this](int x, int y) -> void {
+        
+            sf::RectangleShape rect( sf::Vector2f(32, 32) );
+            rect.setPosition(x, y);
+            _colliders.emplace_back(rect);
+        
+        };
+        
+        /* Left spawn */
+        initCrate(96 + 32, 354 - 32);
+        initCrate(96 + 64, 354);
+        initCrate(96, 354 - 64);
+        /* Right spawn */
+        initCrate(800 - 96 - 96, 354);
+        initCrate(800 - 96 - 64, 354 - 32);
+        initCrate(800 - 96 - 32, 354 - 64);
+        /* Middle */
+        initCrate(400 - 50 - 32, 354);
+        initCrate(400 + 50, 354);
+        /* Top */
+        initCrate(400 - 32, 194);
+        initCrate(400 - 64, 194 - 32);
+        initCrate(400 - 96, 194);
+        initCrate(400, 194);
+        initCrate(400 + 32, 194 - 32);
+        initCrate(400 + 64, 194);
+        
+    }
+    
 }
 
-bool World::checkCollision(sf::Shape & shape) {
+bool World::checkCollision(const sf::Shape & shape) {
     
     for (auto & i : _colliders) {
         

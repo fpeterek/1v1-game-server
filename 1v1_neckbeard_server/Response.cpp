@@ -24,7 +24,7 @@ std::string Response::generateResponse() {
         response << "{";
         
         response << (int)e.get().position().x << "," << (int)e.get().position().y << "," << (char)e.get().direction() << ","
-                 << (int)e.get().hp() << "," << (int)e.get().sprite() << "," << e.get().victoryCounter();
+                 << (int)e.get().hp() << "," << (int)e.get().sprite() << "," << (int)e.get().victoryCounter();
         
         response << "}";
         

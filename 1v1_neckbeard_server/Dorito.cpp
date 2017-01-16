@@ -8,14 +8,25 @@
 
 #include "Dorito.hpp"
 
+Dorito::Dorito() {
+    
+    _hitbox.setSize( sf::Vector2f(16, 16) );
+    
+}
 
 unsigned short Dorito::victoryCounter() {
     return 0;
 }
 
-void Dorito::move(enum direction dir) {
+void Dorito::move() {
     
-    _pos.x += Dorito::speed * (dir == direction::left ? -1 : 1);
+    _pos.x += Dorito::speed * (_dir == direction::left ? -1 : 1);
     _hitbox.setPosition(_pos);
+    
+}
+
+const sf::RectangleShape & Dorito::getHitbox() {
+    
+    return _hitbox;
     
 }

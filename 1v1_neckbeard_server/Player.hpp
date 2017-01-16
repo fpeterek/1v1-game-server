@@ -35,7 +35,7 @@ class Player : public entity {
     sf::RectangleShape _hitbox;
     sf::RectangleShape _attackHitbox;
     
-    std::unordered_map<char, int> _spellCooldown;
+    // std::unordered_map<char, int> _spellCooldown;
     
 public:
     
@@ -47,6 +47,8 @@ public:
     void move(enum direction movementDirection);
     void attack();
     void throwDorito();
+    void updateDorito();
+    void resetDorito();
     void jump();
     void applyForce();
     void resetSprite();

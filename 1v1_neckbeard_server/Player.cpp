@@ -18,6 +18,8 @@ Player::Player(World & newWorld) : _world(newWorld) {
     _attackHitbox.setSize(sf::Vector2f(64, 6));
     _attackHitbox.setPosition(0, 0);
 
+    resetDorito();
+    
 }
 
 void Player::incrementVictoryCounter() {
@@ -47,11 +49,43 @@ void Player::resetAttack() {
     
 }
 
+void Player::updateDorito() {
+    
+    _dorito.move();
+    
+    if ( _world.get().checkCollision(_dorito.getHitbox()) ) {
+        resetDorito();
+    }
+    
+}
+
+void Player::resetDorito() {
+    
+    _dorito.direction() = direction::right;
+    _dorito.position().x = 0;
+    _dorito.position().y = -100;
+    
+}
+
 void Player::throwDorito() {
     
-    /* Doritos can be thrown mid-jump but not mid-attack */
-    if (_attackCounter) {
+    /* Doritos can be thrown mid-jump but not mid-attack or before the previous dorito ceases to exist */
+    if (_attackCounter or _dorito.position().y > 0) {
         return;
+    }
+    
+    ++_doritoCounter;
+    _sprite = (_doritoCounter / 30) + 8;
+    
+    if (_doritoCounter == 119) {
+        
+        _dorito.direction()  = _dir;
+        /* +-15 so it spawns right next to the players hand */
+        _dorito.position().x = _pos.x + (15 * (_dir == direction::left ? -1 : 1) );
+        /* +40 so it matches the animation */
+        _dorito.position().y = _pos.y + 40;
+        _doritoCounter = 0;
+        
     }
     
 }
@@ -70,17 +104,11 @@ void Player::attack() {
         
     }
     
-    /*
-    std::cout << "Player at position [" << pos.x << ", " << pos.y << "], attack hitbox at position ["
-              << _attackHitbox.getPosition().x << ", " << _attackHitbox.getPosition().y << "] Attack hitbox rotation: "
-              << _attackHitbox.getRotation() << std::endl;
-    */
-    
     ++_attackCounter;
     _frameCounter = _attackCounter;
-    _sprite = (_attackCounter / 20) + 4;
+    _sprite = (_attackCounter / 25) + 4;
     
-    if (_attackCounter == 79) {
+    if (_attackCounter == 99) {
         resetAttack();
     }
     
@@ -119,8 +147,8 @@ void Player::resetSprite() {
 
 void Player::move(enum direction movementDirection) {
     
-    ++_frameCounter;
     _sprite = (int)ceilf(_frameCounter / 27.f) % 4;
+    ++_frameCounter;
     
     _dir = movementDirection;
     
@@ -139,7 +167,7 @@ void Player::jump() {
     
     if (_canJump) {
         _canJump = false;
-        _force = -2.8f;
+        _force = -3.2f;
     }
     
 }
@@ -167,7 +195,9 @@ void Player::applyForce() {
         _force = 0;
         return;
     }
-    resetSprite();
+    if (not _doritoCounter) {
+        resetSprite();
+    }
     {
         float addedForce = fabsf(_force) / 25;
         _force += addedForce;

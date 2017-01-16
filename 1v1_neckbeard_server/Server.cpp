@@ -42,18 +42,19 @@ void Server::resetPlayers() {
     /* Player sprite is scaled up by 3, therefor the hitbox is 10 * 3          */
     /* Width of player is 30                                                   */
     _player1.position().x = 110;
-    _player1.position().y = 295;
+    _player1.position().y = 150;
     _player1.direction() = direction::right;
     
     _player2.position().x = 690 - 30;
 #ifdef TEMPORARY_MOVE_PLAYER2
     _player2.position().x -= 200;
 #endif
-    _player2.position().y = 295;
+    _player2.position().y = 150;
     _player2.direction() = direction::left;
     
     auto init = [&] (Player & player) -> void {
         player.resetAttack();
+        player.resetDorito();
         player.getHitbox().setPosition(player.position().x, player.position().y);
         player.hp() = 6;
     };
@@ -195,12 +196,19 @@ void Server::sleep(const unsigned int milliseconds) {
 void Server::updatePlayers() {
     
     _player1.applyForce();
+    _player1.updateDorito();
     _player2.applyForce();
+    _player2.updateDorito();
     
-    if (_player1.collidesWith(_player2.getSwordHitbox())) {
+    if ( _player1.collidesWith(_player2.getSwordHitbox()) ) {
         
         _player1.takeDamage();
         _player2.resetAttackHitbox();
+        
+    } else if ( _player1.collidesWith(_player2.getDorito().getHitbox()) ) {
+        
+        _player1.takeDamage();
+        _player2.resetDorito();
         
     }
     
@@ -208,6 +216,11 @@ void Server::updatePlayers() {
         
         _player2.takeDamage();
         _player1.resetAttackHitbox();
+        
+    } else if ( _player2.collidesWith(_player1.getDorito().getHitbox()) ) {
+        
+        _player2.takeDamage();
+        _player1.resetDorito();
         
     }
     

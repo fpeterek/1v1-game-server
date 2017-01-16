@@ -27,7 +27,7 @@ class World {
 public:
     
     World();
-    bool checkCollision(sf::Shape & shape);
+    bool checkCollision(const sf::Shape & shape);
     
 };
 
