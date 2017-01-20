@@ -53,16 +53,16 @@ World::World() {
         };
         
         /* Left spawn */
-        initCrate(96 + 32, 354 - 32);
-        initCrate(96 + 64, 354);
-        initCrate(96, 354 - 64);
+        initCrate(96 + 32, 360 - 32);
+        initCrate(96 + 64, 360);
+        initCrate(96, 360 - 64);
         /* Right spawn */
-        initCrate(800 - 96 - 96, 354);
-        initCrate(800 - 96 - 64, 354 - 32);
-        initCrate(800 - 96 - 32, 354 - 64);
+        initCrate(800 - 96 - 96, 360);
+        initCrate(800 - 96 - 64, 360 - 32);
+        initCrate(800 - 96 - 32, 360 - 64);
         /* Middle */
-        initCrate(400 - 50 - 32, 354);
-        initCrate(400 + 50, 354);
+        initCrate(400 - 50 - 32, 360);
+        initCrate(400 + 50, 360);
         /* Top */
         initCrate(400 - 32, 194);
         initCrate(400 - 64, 194 - 32);
