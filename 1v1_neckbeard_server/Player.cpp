@@ -97,7 +97,9 @@ void Player::attack() {
         return;
     }
     
-    if (_attackCounter == 60 or _attackCounter == 20) {
+    /* It feels weird if the hitbox moves as soon as the sprite changes, as the blade doesn't even touch the opponent */
+    /* Moving the hitbox 5 loop iterations after the sprite changes should hopefully make the game feel better        */
+    if (_attackCounter == (75 + 10) or _attackCounter == (25 + 10)) {
         
         _attackHitbox.setRotation( 180 * (_dir == direction::left) );
         _attackHitbox.setPosition(_pos.x + 15 /* So it starts in the middle of the player hitbox */, _pos.y + 96 / 2);
