@@ -12,6 +12,7 @@ If not, you can use
   sudo apt install libsfml-dev (Linux distributions that use apt) 
   or
   brew install sfml (macOS)
+  to download the required libraries.
 
 ####Disclaimer:
 Using this application, or parts of the code, is highly discouraged. Seriously. Go read a book.
