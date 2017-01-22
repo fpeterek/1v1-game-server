@@ -9,8 +9,6 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
-#include "ResourcePath.hpp"
-
 #include "Server.hpp"
 
 

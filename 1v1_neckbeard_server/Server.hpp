@@ -18,8 +18,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
 
-#include "ResourcePath.hpp"
-
 #include "macros.hpp"
 #include "Player.hpp"
 #include "Dorito.hpp"
