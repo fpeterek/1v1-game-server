@@ -9,7 +9,8 @@ A server application written in C++ using SFML. The server application uses UDP 
 Easiest way to install this is to download buildable.zip, unzip it and run build.sh.
 Make sure you have SFML installed on your computer.
 If not, you can use 
-  sudo apt install libsfml-dev (Linux distributions that use apt)
+  sudo apt install libsfml-dev (Linux distributions that use apt) 
+  or
   brew install sfml (macOS)
 
 ####Disclaimer:
