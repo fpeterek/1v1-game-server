@@ -17,7 +17,7 @@ unsigned char & entity::sprite() {
     return _sprite;
 }
 
-direction & entity::direction() {
+direction & entity::getDirection() {
     return _dir;
 }
 
