@@ -35,7 +35,7 @@ protected:
 public:
     
     /* These all just return a reference since they are freely modifiable anyway and getters make no sense */
-    direction & direction();
+    direction & getDirection();
     char & hp();
     sf::Vector2f & position();
     
