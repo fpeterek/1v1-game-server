@@ -23,7 +23,7 @@ std::string Response::generateResponse() {
         
         response << "{";
         
-        response << (int)e.get().position().x << "," << (int)e.get().position().y << "," << (char)e.get().direction() << ","
+        response << (int)e.get().position().x << "," << (int)e.get().position().y << "," << (char)e.get().getDirection() << ","
                  << (int)e.get().hp() << "," << (int)e.get().sprite() << "," << (int)e.get().victoryCounter();
         
         response << "}";
