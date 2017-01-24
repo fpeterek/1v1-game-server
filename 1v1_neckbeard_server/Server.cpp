@@ -43,14 +43,14 @@ void Server::resetPlayers() {
     /* Width of player is 30                                                   */
     _player1.position().x = 110;
     _player1.position().y = 150;
-    _player1.direction() = direction::right;
+    _player1.getDirection() = direction::right;
     
     _player2.position().x = 690 - 30;
 #ifdef TEMPORARY_MOVE_PLAYER2
     _player2.position().x -= 200;
 #endif
     _player2.position().y = 150;
-    _player2.direction() = direction::left;
+    _player2.getDirection() = direction::left;
     
     auto init = [&] (Player & player) -> void {
         player.resetAttack();
